@@ -5,7 +5,10 @@ import (
 )
 
 func main() {
-	flame.Connect("localhost", 2020, "client1")
+	channel, _ := flame.Connect("localhost", 2020, "client3")
+	streamTopic, _ := channel.AccessTopic("Stream")
+	streamTopic.Publish([]byte("hey"))
+	streamTopic.Subscribe()
 	end := make(chan int)
 	<-end
 }

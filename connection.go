@@ -8,7 +8,7 @@ import (
 )
 
 // Connect connects to the following host and port.
-func Connect(host string, port int, identifier string) (*Channel, error) {
+func Connect(host string, port int, userID string) (*Channel, error) {
 
 	handler := handler.New(host, port)
 	if err := handler.Connect(); err != nil { // TODO: try again.
@@ -16,7 +16,7 @@ func Connect(host string, port int, identifier string) (*Channel, error) {
 	}
 
 	channel := &Channel{handler}
-	err := sendRegistrationRequest(identifier, channel)
+	err := sendRegistrationRequest(userID, channel)
 	return channel, err
 }
 
