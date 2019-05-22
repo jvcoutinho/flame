@@ -11,8 +11,16 @@ func newTopicHandler(name string, channel *Channel) *TopicHandler {
 	return &TopicHandler{name, channel}
 }
 
-func (topicHandler *TopicHandler) Publish(item interface{}) {
-	message := message.New("push", topicHandler.topicName, item)
-	topicHandler.channel.send(message)
-	// TODO: checar se tá tudo ok.
+func (topicHandler *TopicHandler) Publish(item interface{}) error {
+	request := message.NewRequest("", message.Publish, topicHandler.topicName, item)
+	return topicHandler.channel.call(request)
+}
+
+func (topicHandler *TopicHandler) Subscribe() (<-chan interface{}, error) {
+	request := message.NewRequest("", message.Subscribe, topicHandler.topicName, "host")
+	if err := topicHandler.channel.call(request); err != nil {
+		return nil, err
+	}
+
+	return make(chan interface{}), nil
 }

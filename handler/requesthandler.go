@@ -27,3 +27,12 @@ func (crh *ClientRequestHandler) Connect() error {
 func (crh *ClientRequestHandler) Send(data []byte) {
 	crh.conn.Write(data)
 }
+
+func (handler *ClientRequestHandler) Receive() []byte {
+	byteMsg := make([]byte, 2048)
+	read, err := handler.conn.Read(byteMsg)
+	if err != nil {
+		return nil
+	}
+	return byteMsg[:read]
+}
