@@ -40,14 +40,14 @@ func (JSONMarshaller) MarshalResponse(response message.Response) []byte {
 	return marshalledData
 }
 
-func (JSONMarshaller) UnmarshalRequest(data []byte) message.Request {
+func (JSONMarshaller) UnmarshalRequest(data []byte) (message.Request, error) {
 
 	unmarshalledData := message.Request{}
 	err := json.Unmarshal(data, &unmarshalledData)
 	if err != nil {
-		fmt.Println(err.Error())
+		return message.Request{}, err
 	}
-	return unmarshalledData
+	return unmarshalledData, nil
 }
 
 func (JSONMarshaller) UnmarshalResponse(data []byte) message.Response {

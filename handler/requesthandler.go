@@ -5,17 +5,17 @@ import (
 	"strconv"
 )
 
-type ClientRequestHandler struct {
+type RequestHandler struct {
 	host string
 	port int
 	conn net.Conn
 }
 
-func New(host string, port int) *ClientRequestHandler {
-	return &ClientRequestHandler{host, port, nil}
+func New(host string, port int) *RequestHandler {
+	return &RequestHandler{host, port, nil}
 }
 
-func (crh *ClientRequestHandler) Connect() error {
+func (crh *RequestHandler) Connect() error {
 	conn, err := net.Dial("tcp", crh.host+":"+strconv.Itoa(crh.port))
 	if err != nil {
 		return err
@@ -24,15 +24,16 @@ func (crh *ClientRequestHandler) Connect() error {
 	return nil
 }
 
-func (crh *ClientRequestHandler) Send(data []byte) {
-	crh.conn.Write(data)
+func (crh *RequestHandler) Send(data []byte) error {
+	_, err := crh.conn.Write(data)
+	return err
 }
 
-func (handler *ClientRequestHandler) Receive() []byte {
+func (handler *RequestHandler) Receive() ([]byte, error) {
 	byteMsg := make([]byte, 2048)
 	read, err := handler.conn.Read(byteMsg)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return byteMsg[:read]
+	return byteMsg[:read], nil
 }
